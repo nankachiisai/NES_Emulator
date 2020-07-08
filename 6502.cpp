@@ -115,9 +115,85 @@ void CPU_6502::next() {
         case 0x9d:
             count = 3;
 
-            mem->setByte(((unsigned short) mem->getByte(pc + 1) << 8) |
-                          (unsigned short) mem->getByte(pc + 2), a);
+            mem->setByte(ADDR(mem->getByte(pc + 2), mem->getByte(pc + 1)), a);
             pc += 3;
+
+            break;
+
+        // Immediage LDY
+        case 0xa0:
+            count = 1;
+
+            y = mem->getByte(pc + 1);
+            pc += 2;
+
+            if (check_negative(x)) SET(p, STATUS_N);
+            else CLEAR(p, STATUS_N);
+
+            if (check_zero(x)) SET(p, STATUS_Z);
+            else CLEAR(p, STATUS_Z);
+
+            break;
+
+        // Absolute,X LDA
+        case 0xb0:
+            count = 3;
+
+            a = mem->getByte(ADDR(mem->getByte(pc + 2), mem->getByte(pc + 1)) + x);
+            pc += 3;
+
+            if (check_negative(x)) SET(p, STATUS_N);
+            else CLEAR(p, STATUS_N);
+
+            if (check_zero(x)) SET(p, STATUS_Z);
+            else CLEAR(p, STATUS_Z);
+
+            break;
+
+        // Implied INX
+        case 0xe8:
+            count = 1;
+
+            x++;
+            pc++;
+
+            if (check_negative(x)) SET(p, STATUS_N);
+            else CLEAR(p, STATUS_N);
+
+            if (check_zero(x)) SET(p, STATUS_Z);
+            else CLEAR(p, STATUS_Z);
+
+            break;
+
+        // Implied DEY
+        case 0x88:
+            count = 1;
+
+            y--;
+            pc++;
+
+            if (check_negative(x)) SET(p, STATUS_N);
+            else CLEAR(p, STATUS_N);
+
+            if (check_zero(x)) SET(p, STATUS_Z);
+            else CLEAR(p, STATUS_Z);
+
+            break;
+
+        // Relative BNE
+        case 0xd0:
+            count = 1;
+
+            if (!(p & 0x02)) pc += (short) mem->getByte(pc + 1);
+            else pc += 2;
+
+            break;
+
+        // Absolute JMP
+        case 0x4c:
+            count = 2;
+
+            pc = ADDR(mem->getByte(pc + 2), mem->getByte(pc + 1));
 
             break;
         }

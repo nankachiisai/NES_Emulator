@@ -12,7 +12,9 @@
 #define STATUS_N 0x80
 
 #define SET(P, N) P |= N
-#define CLEAR(P, N) P &= N 
+#define CLEAR(P, N) P &= N
+#define ADDR(hword, lword) ((unsigned short) hword << 8) |\
+                           (unsigned short) lword
 
 class CPU_6502 {
 public:
