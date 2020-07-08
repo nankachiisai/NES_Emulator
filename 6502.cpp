@@ -4,7 +4,7 @@
 CPU_6502::CPU_6502(memory *m) {
     mem = m;
 
-    pc = (mem->getByte(0x00fd) << 8) | (mem->getByte(0xfffc));
+    pc = (mem->getByte(0xfffd) << 8) | (mem->getByte(0xfffc));
     a = 0x00;
     x = 0x00;
     y = 0x00;

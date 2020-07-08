@@ -16,10 +16,17 @@
 #define ADDR(hword, lword) ((unsigned short) hword << 8) |\
                            (unsigned short) lword
 
+enum interrupt {
+    NMI,
+    IRQ,
+    BRK
+};
+
 class CPU_6502 {
 public:
     void next();
     void reset();
+    void interrupt(enum interrupt i);
     CPU_6502(memory *m);
 
 private:
